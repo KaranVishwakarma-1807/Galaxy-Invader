@@ -50,28 +50,40 @@ BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("./Version 1.
 BACKGROUND_WIDTH = BACKGROUND.get_width()
 BACKGROUND_HEIGHT = BACKGROUND.get_height()
 
+
+
+#create a class for the laser
 class Laser:
+    #initializing the instances
     def __init__(self, x, y, img):
         self.x = x
         self.y = y
         self.img = img
         self.mask = pygame.mask.from_surface(self.img)
 
+    #function to draw the lasers on the screen
     def draw(self, window):
         window.blit(self.img, (self.x, self.y))
-    
+
+    #function to move the laser
     def move(self, vel):
         self.y += vel
 
+    #function to check if the laser is off the screen
     def laser_offscreen(self, height):
         return not(self.y < height and self.y >= 0)
     
+    #fucntion for the collision
     def collision(self, obj):
         return collide(obj, self)
     
+
+
+
+#class for the the ships
 class Ship:
     COOLDOWN = 30
-
+    #initializing the instances
     def __init__(self, x, y, health=100):
         self.x = x
         self.y = y
@@ -81,11 +93,13 @@ class Ship:
         self.lasers = []
         self.cooldown_timer = 0
 
+    #function to draw the ships
     def draw(self, window):
         WIN.blit(self.ship_image, (self.x, self.y))
         for laser in self.lasers:
             laser.draw(window)
 
+    #function for the movement of the laser of the individual ship
     def laser_move(self, vel, obj):
         self.cooldown()
         for laser in self.lasers:
@@ -97,33 +111,40 @@ class Ship:
                 obj.health -= 10
                 self.lasers.remove(laser)
 
+    #laser cooldown for the ship
     def cooldown(self):
         if self.cooldown_timer >= self.COOLDOWN:
             self.cooldown_timer = 0
         elif self.cooldown_timer > 0 :
             self.cooldown_timer +=1 
 
+    #function for the shooting of the laser of the individual ship
     def shoot(self):    
         if  self.cooldown_timer == 0:
             laser = Laser(self.x, self.y, self.laser_image)
             self.lasers.append(laser)
             self.cooldown_timer = 1 
 
+    #functions to get the dimensions of the ship
     def get_width(self):
         return self.ship_image.get_width()
-
     def get_height(self):
         return self.ship_image.get_height()
 
 
+
+
+#class for the player ship
 class Player(Ship):
+    #initializing the instances
     def __init__(self, x, y, health=100):
         super().__init__(x, y, health)
         self.ship_image = PLAYER_SHIP
         self.laser_image = YELLOW_LASER
         self.mask = pygame.mask.from_surface(self.ship_image)
         self.max_health = health
-    
+
+    #laser movement of the player ship
     def laser_move(self, vel, objs):
         self.cooldown()
         for laser in self.lasers:
@@ -138,57 +159,74 @@ class Player(Ship):
                         if laser in self.lasers:
                             self.lasers.remove(laser)
 
+    #to draw the player ship and the healthbar
     def draw(self, window):
         super().draw(window)
         self.healthbar(window)
 
+    #creating the healthbar
     def healthbar(self, window):
         pygame.draw.rect(window, (255,0,0), (self.x, self.y + self.ship_image.get_height() + 10, self.ship_image.get_width(), 10))
         pygame.draw.rect(window, (0,255,0), (self.x, self.y + self.ship_image.get_height() + 10, self.ship_image.get_width() * (self.health/self.max_health), 10))
 
 
+
+
+
+#class for the enemy ships
 class Enemy(Ship):
+    #defining the colors of the enemy ships
     COLOR = {
         "red" : (RED_SHIP, RED_LASER),
         "blue" : (BLUE_SHIP, BLUE_LASER),
         "green"  : (GREEN_SHIP, GREEN_LASER)
     }
 
+    #initializing the instances
     def __init__(self, x, y, color, health=100):
         super().__init__(x, y, health)
         self.ship_image, self.laser_image = self.COLOR[color]
         self.mask = pygame.mask.from_surface(self.ship_image)
-    
+
+    #laser shooting of the enemy ships
     def shoot(self):    
         if  self.cooldown_timer == 0:
             laser = Laser(self.x-10, self.y, self.laser_image)
             self.lasers.append(laser)
             self.cooldown_timer = 1 
 
+    #movement of the ships
     def movement(self, vel):
         self.y += vel
 
 
 
+
+#function for the collision of the ships
 def collide(obj1, obj2):
     offset_x = (obj1.x - obj2.x) - 50  
     offset_y = (obj1.y - obj2.y) - 40
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
 
+
+
+#main game function
 def main():
+    #defining required variables
     run = True
 
-    FPS = 60
+    FPS = 60 #frames per second
 
-    lives = 5
+    lives = 5 #player lives
 
     level = 0
 
-    player_vel = 5
+    player_vel = 5 #player velocity
 
-    laser_vel = 10
+    laser_vel = 10 #laser velocity
 
+    #defining the fonts
     font = pygame.font.SysFont("arkhip - regular", 30)
     lost_font =  pygame.font.SysFont("stiff staff heavy", 60)
 
@@ -196,32 +234,16 @@ def main():
     wave_lenght = 5
     enemy_vel = 1
 
+    #player's defaults position
     player = Player(300, 630)
 
-    #define game variables
-    scroll = 0
-    tiles = math.ceil(HEIGHT  / BACKGROUND_HEIGHT) + 1
-    # scroll_speed = 60
-    # clock_1 = pygame.time.Clock()
-
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() #creating a clock to regualte the frame rate
 
     lost = False
     lost_timer = 0
 
+    #functtion to draw the game events
     def redraw_display():
-
-        # clock_1.tick(scroll_speed)
-        nonlocal scroll
-        #draw scrolling background
-        for i in range(0, tiles):
-            WIN.blit(BACKGROUND, (0, i * BACKGROUND_HEIGHT + scroll - BACKGROUND_HEIGHT))
-        #scroll background
-        scroll += 3 #can change the value to change the scroll speed
-        #reset scroll
-        if math.floor(abs(scroll)) > BACKGROUND_HEIGHT:
-            scroll = 0
-
         #text
         lives_text = font.render(f"Lives: {lives}", 1, (255,255,255))
         level_text = font.render(f"Level: {level}", 1, (255,255,255))
@@ -229,11 +251,13 @@ def main():
         WIN.blit(lives_text, (10,10))
         WIN.blit(level_text, (WIDTH - level_text.get_width() - 10 ,10)) 
 
+        #drawing the enemy ships
         for enemy in enemies:
             enemy.draw(WIN)
 
         player.draw(WIN)
 
+        #handling the losing of the game
         if lost:
             GAME_OVER.play()
             lost_msg = lost_font.render("GAME OVER", 1, (255,255,255))
@@ -241,11 +265,13 @@ def main():
 
         pygame.display.update()
 
+    #main event loop
     while run:
-        clock.tick(FPS)
+        clock.tick(FPS)  #regulating the fps
 
         redraw_display() 
 
+        #losing of game
         if lives <= 0 or player.health <= 0:
             lost = True
             lost_timer += 1
@@ -257,7 +283,8 @@ def main():
                 break
             else:
                 continue
-
+        
+        #spawning of the enemy ships
         if len(enemies) == 0:
             level += 1
             LEVEL_UP.play()
@@ -266,13 +293,14 @@ def main():
                 enemy = Enemy(random.randrange(50, WIDTH - 100), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
                 enemies.append(enemy)     
 
-
+        #checking for the quit event
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 QUIT_BUTTON.play()
                 pygame.time.delay(1000)
                 quit()
 
+        #movement of the player ship
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_LEFT] and player.x > 0:
             player.x -= player_vel
@@ -290,14 +318,17 @@ def main():
             player.shoot()
             PLAYER_LASER.play()
 
+        #for enemy ship
         for enemy in enemies[:]:
             enemy.movement(enemy_vel)
             enemy.laser_move(laser_vel, player)
 
+            #to shoot
             if random.randrange(0, 2*60) == 1:
                 enemy.shoot()
                 # ENEMY_LASER.play()
 
+            #for collision
             if collide(enemy, player):
                 DAMAGE.play()
                 player.health -=10
@@ -310,58 +341,30 @@ def main():
         player.laser_move(-laser_vel, enemies)
 
 
+#main manu
 def main_menu():
-
-    #define game variables
-    scroll = 0
-    tiles = math.ceil(HEIGHT  / BACKGROUND_HEIGHT) + 1
-
-    clock = pygame.time.Clock()
-    FPS = 60
-    clock.tick(FPS)
-
+    #definig the fonts
     menu_font_1 = pygame.font.SysFont("space games", 45)
     menu_font_2 = pygame.font.SysFont("file", 30)
 
-     # List of colors for the title_2 text
-    colors = [(0,0,0),(255,255,255)]
-    color_index = 0  # Start with the first color
-
-    # Timer for color change
-    color_change_time = time.time()
-
     run = True
+
+    #main menu loop
     while run:
         INTRO.play()
-        #draw scrolling background
-        for i in range(0, tiles):
-            WIN.blit(BACKGROUND, (0, i * BACKGROUND_HEIGHT + scroll - BACKGROUND_HEIGHT))
-        #scroll background
-        scroll += 0.10 #can change the value to change the scroll speed
-        #reset scroll
-        if math.floor(abs(scroll)) > BACKGROUND_HEIGHT:
-            scroll = 0
+
         title_1 = menu_font_1.render("GALAXY INVADER", 1, (255,255,255))
-        # title_2 = menu_font_2.render("Press any Mousebutton to Begin...", 1, (255,255,255))
-        # Change the color for title_2
-        title_2_color = colors[color_index]
-        title_2 = menu_font_2.render("Press any Button to Begin...", 1, title_2_color)
+        title_2 = menu_font_2.render("Press any Button to Begin...", 1, (255,255,255))
 
         WIN.blit(title_1, (WIDTH/2 - title_1.get_width()/2, HEIGHT/2 - title_1.get_height()/2 - 20))
         WIN.blit(title_2, (WIDTH/2 - title_2.get_width()/2, HEIGHT/2 - title_2.get_height()/2 + 200))
         pygame.display.update()
-
-         # Update color index every 1 second
-        current_time = time.time()
-        if current_time - color_change_time >= 0.5:
-            color_index = (color_index + 1) % len(colors)  # Cycle through the colors
-            color_change_time = current_time
-
+        #checking for the event
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:  #quit event
                 QUIT_BUTTON.play()
                 run = False
-            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:  #to start the game
                 INTRO.stop()
                 main()
                 
