@@ -1,50 +1,52 @@
+#importing all the required libraries
 import pygame
 import os
 import random
-pygame.font.init()
-pygame.mixer.init() 
+pygame.font.init() #initializing the font module
+pygame.mixer.init() #initializing the mixer module
 import math
 import time
 
+#dimensions of the window
 WIDTH, HEIGHT = 650, 750
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Galaxy Invader Version 1.0")
 
 #load sounds
-DAMAGE = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "damage.wav"))
-# ENEMY_LASER = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "enemy_laser.wav"))
-GAME_OVER = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "game_over.wav"))
-INTRO = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "intro.wav"))
-LIFE_LOST = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "life_lost.wav"))
-MOVEMENT = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "movement.wav"))
+DAMAGE = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "damage.wav"))
+# ENEMY_LASER = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "enemy_laser.wav"))
+GAME_OVER = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "game_over.wav"))
+INTRO = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "intro.wav"))
+LIFE_LOST = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "life_lost.wav"))
+MOVEMENT = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "movement.wav"))
 MOVEMENT.set_volume(0.4)
-PLAYER_LASER = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "player_laser.wav"))
+PLAYER_LASER = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "player_laser.wav"))
 PLAYER_LASER.set_volume(0.2)
-QUIT_BUTTON = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "quit_button.wav"))
+QUIT_BUTTON = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "quit_button.wav"))
 QUIT_BUTTON.set_volume(1.0)
-LEVEL_UP = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "level_up.wav"))
-ENEMY_DESTROYED = pygame.mixer.Sound(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "enemy_destroyed.wav"))
+LEVEL_UP = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "level_up.wav"))
+ENEMY_DESTROYED = pygame.mixer.Sound(os.path.join("./Version 1.0", "Resources", "enemy_destroyed.wav"))
 
 #load images
-RED_SHIP = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "red_enemy_ship.png"))
-BLUE_SHIP = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "blue_enemy_ship.png"))
-GREEN_SHIP = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "green_enemy_ship.png"))
+RED_SHIP = pygame.image.load(os.path.join("./Version 1.0", "Resources", "red_enemy_ship.png"))
+BLUE_SHIP = pygame.image.load(os.path.join("./Version 1.0", "Resources", "blue_enemy_ship.png"))
+GREEN_SHIP = pygame.image.load(os.path.join("./Version 1.0", "Resources", "green_enemy_ship.png"))
 
 #icon
-ICON = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "icon.png"))
+ICON = pygame.image.load(os.path.join("./Version 1.0", "Resources", "icon.png"))
 pygame.display.set_icon(ICON)
 
 #main player ship
-PLAYER_SHIP = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "player_ship.png"))
+PLAYER_SHIP = pygame.image.load(os.path.join("./Version 1.0", "Resources", "player_ship.png"))
 
 #lasers
-RED_LASER = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "red_laser.png"))
-BLUE_LASER = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "blue_laser.png"))
-GREEN_LASER = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "green_laser.png"))
-YELLOW_LASER = pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "yellow_laser.png"))
+RED_LASER = pygame.image.load(os.path.join("./Version 1.0", "Resources", "red_laser.png"))
+BLUE_LASER = pygame.image.load(os.path.join("./Version 1.0", "Resources", "blue_laser.png"))
+GREEN_LASER = pygame.image.load(os.path.join("./Version 1.0", "Resources", "green_laser.png"))
+YELLOW_LASER = pygame.image.load(os.path.join("./Version 1.0", "Resources", "yellow_laser.png"))
 
 #background
-BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("./Galaxy Invader" ,"Version 1.0", "Resources", "background.png")), (WIDTH, HEIGHT)).convert()
+BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("./Version 1.0", "Resources", "background.png")), (WIDTH, HEIGHT)).convert()
 BACKGROUND_WIDTH = BACKGROUND.get_width()
 BACKGROUND_HEIGHT = BACKGROUND.get_height()
 
