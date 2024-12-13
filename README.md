@@ -37,3 +37,8 @@ How long can you survive!?!
 
 <br>
 THANK YOU!!
+
+**+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+**
+<br>
+**NOTE:-** In this game, objects are not pixel perfect, that means bigger ships including the player ship are slightly offset from the object rectangle.
+So, whenever player hit an enemy on the right side of the ship the laser will pass through it without doing any damage and whne the player ship collides with the laser on the enemy ship itself on the right side, it will not take any damage.
