@@ -389,7 +389,7 @@ def main_menu():
         WIN.blit(title_2, (WIDTH/2 - title_2.get_width()/2, HEIGHT/2 - title_2.get_height()/2 + 200))
         pygame.display.update()
 
-         # Update color index every 1 second
+        # Update color index every 1 second
         current_time = time.time()
         if current_time - color_change_time >= 0.5:
             color_index = (color_index + 1) % len(colors)  # Cycle through the colors
@@ -402,6 +402,7 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN: #to check for the mouse click event
                 INTRO.stop()
                 main()
+                
                 
     pygame.quit()
 

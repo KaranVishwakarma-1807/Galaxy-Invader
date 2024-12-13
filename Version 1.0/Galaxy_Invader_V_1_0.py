@@ -242,8 +242,12 @@ def main():
     lost = False
     lost_timer = 0
 
-    #functtion to draw the game events
+    #function to draw the game events
     def redraw_display():
+
+        #background
+        WIN.blit(BACKGROUND, (0,0))
+
         #text
         lives_text = font.render(f"Lives: {lives}", 1, (255,255,255))
         level_text = font.render(f"Level: {level}", 1, (255,255,255))
@@ -353,6 +357,9 @@ def main_menu():
     while run:
         INTRO.play()
 
+        #background
+        WIN.blit(BACKGROUND, (0,0))
+
         title_1 = menu_font_1.render("GALAXY INVADER", 1, (255,255,255))
         title_2 = menu_font_2.render("Press any Button to Begin...", 1, (255,255,255))
 
@@ -367,6 +374,7 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:  #to start the game
                 INTRO.stop()
                 main()
+                
                 
     pygame.quit()
 

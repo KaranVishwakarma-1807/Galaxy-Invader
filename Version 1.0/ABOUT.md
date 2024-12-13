@@ -32,6 +32,11 @@ Using this text I have changed the text:
 <br>
 -the game over text
 
+**AND**
+I also added a simple background to the game using "pygame.image.load()" module.
+It is a simple space image as a background, but it give the game a nice look and space vibe.
+So now you wont be playing in the void....
+
 These are the resouces I used:
 <br>
 For sound effect:
